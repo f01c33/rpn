@@ -936,7 +936,7 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					break
 				case "dup": // Duplicates the top stack item
 					if debug {
-						fmt.Fprintf(os.Stderr, "x = pop(); push(x); push(x);\n", stack[i-1])
+						fmt.Fprintf(os.Stderr, "x = pop(); push(%v); push(%v);\n", stack[i-1], stack[i-1])
 					}
 					stack[i] = stack[i-1]
 					break
@@ -983,7 +983,7 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					break
 				case "stack": // Toggles stack display from horizontal to vertical
 					if debug {
-						fmt.Fprintf(os.Stderr, "toggle stack visualization\n", stack[i-1])
+						fmt.Fprintf(os.Stderr, "toggle stack visualization %v\n", stack[i-1])
 					}
 					Vertical = !Vertical
 					break
