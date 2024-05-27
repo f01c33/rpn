@@ -35,7 +35,6 @@ var (
 	Exit     = false
 	// x of interally eXecutable, c of constant, m of macro, a of assignment
 	keyWords = map[string]string{
-
 		// Arithmetic Operators
 
 		"+":   "x", // Add
@@ -140,16 +139,16 @@ var (
 		"stack":  "x", // Toggles stack display from horizontal to vertical
 		"swap":   "x", // Swap the top 2 stack items
 
-		//Macros and Variables
+		// Macros and Variables
 
 		"macro": "m", // Defines a macro, e.g. 'macro kib 1024 *'
 		"=":     "a", // Assigns a variable, e.g. '1024 x='
 
-		//Other
+		// Other
 
-		"help":  "x", //Print the help message
-		"exit":  "x", //Exit the calculator
-		"debug": "x", //toggle debug mode
+		"help":  "x", // Print the help message
+		"exit":  "x", // Exit the calculator
+		"debug": "x", // toggle debug mode
 	}
 )
 
@@ -187,7 +186,7 @@ func getFiles() (in *os.File, out *os.File) {
 
 func getBase(s string) int {
 	if len(s) == 0 {
-		//what
+		// what
 		return -1
 	}
 	if s[0] == 0 && len(s) > 3 {
@@ -312,7 +311,7 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 		case Number:
 			continue
 		case Variable:
-			ok := true
+			var ok bool
 			prev := vars[stack[i].V]
 			stack[i], ok = vars[stack[i].V]
 			if ok {
@@ -339,7 +338,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "-":
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v - %v\n", stack[i-2].F, stack[i-1].F)
@@ -349,7 +347,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack = remove(stack, i, 2)
 					i -= 2
 
-					break
 				case "*":
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v * %v\n", stack[i-2].F, stack[i-1].F)
@@ -358,7 +355,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "/":
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v / %v\n", stack[i-2].F, stack[i-1].F)
@@ -367,7 +363,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "cla": // Clear the stack and variables
 					if debug {
 						fmt.Fprintf(os.Stderr, "Clearing stack and variables\n")
@@ -375,20 +370,17 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack = make([]Var, 0)
 					vars = make(map[string]Var, 0)
 					i = 0
-					break
 				case "clr": // Clear the stack
 					if debug {
 						fmt.Fprintf(os.Stderr, "Clearing the stack\n")
 					}
 					stack = make([]Var, 0)
 					i = 0
-					break
 				case "clv": // Clear the variables
 					if debug {
 						fmt.Fprintf(os.Stderr, "Clearing the variables\n")
 					}
 					vars = make(map[string]Var, 0)
-					break
 				case "!": // Boolean NOT
 					if debug {
 						fmt.Fprintf(os.Stderr, "!%v\n", stack[i-1])
@@ -396,7 +388,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i-1].F.Neg(stack[i-1].F)
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "%": // Modulus
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v mod %v\n", stack[i-2].F, stack[i-1].F)
@@ -407,7 +398,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "++": // Increment
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v++\n", stack[i-1].F)
@@ -415,7 +405,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i-1].F.Add(stack[i-1].F, big.NewFloat(1))
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "--": // Decrement
 
 					if debug {
@@ -424,7 +413,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i-1].F.Sub(stack[i-1].F, big.NewFloat(1))
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "&": // Bitwise AND
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v & %v\n", stack[i-2].F, stack[i-1].F)
@@ -435,7 +423,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "|": // Bitwise OR
 
 					if debug {
@@ -447,7 +434,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "^": // Bitwise XOR
 
 					if debug {
@@ -459,7 +445,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "~": // Bitwise NOT
 					if debug {
 						fmt.Fprintf(os.Stderr, "~%v\n", stack[i-1].F)
@@ -469,7 +454,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "<<": // Bitwise shift left
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v << %v\n", stack[i-2].F, stack[i-1].F)
@@ -480,7 +464,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case ">>": // Bitwise shift right
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v >> %v\n", stack[i-2].F, stack[i-1].F)
@@ -491,7 +474,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "!=": // Not equal to
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v != %v\n", stack[i-1], stack[i-2])
@@ -507,7 +489,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "==": // Equal to
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v == %v\n", stack[i-1], stack[i-2])
@@ -523,7 +504,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "<": // Less than
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v < %v\n", stack[i-1], stack[i-2])
@@ -539,7 +519,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "<=": // Less than or equal to
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v <= %v\n", stack[i-1], stack[i-2])
@@ -555,7 +534,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case ">": // Greater than
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v > %v\n", stack[i-1], stack[i-2])
@@ -571,7 +549,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case ">=": // Greater than or equal to
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v >= %v\n", stack[i-1], stack[i-2])
@@ -587,9 +564,8 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "&&": // Boolean AND
-					//ok for boolean comparison to lose precision
+					// ok for boolean comparison to lose precision
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v && %v\n", stack[i-1], stack[i-2])
 					}
@@ -603,7 +579,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "||": // Boolean OR
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v || %v\n", stack[i-1], stack[i-2])
@@ -618,7 +593,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "^^": // Boolean XOR
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v ^^ %v\n", stack[i-1], stack[i-2])
@@ -636,18 +610,16 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "acos": // Arc Cosine
 					if debug {
 						fmt.Fprintf(os.Stderr, "acos(%v)\n", stack[i-1])
 					}
-					//i'm sorry for i have sined, i didn't implement a bignum version of the trig functions, it would take too long
+					// i'm sorry for i have sined, i didn't implement a bignum version of the trig functions, it would take too long
 					a, _ := stack[i-1].F.Float64()
 					stack[i].F = big.NewFloat(math.Acos(a))
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "asin": // Arc Sine
 					if debug {
 						fmt.Fprintf(os.Stderr, "asin(%v)\n", stack[i-1])
@@ -657,7 +629,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "atan": // Arc Tangent
 					if debug {
 						fmt.Fprintf(os.Stderr, "atan(%v)\n", stack[i-1])
@@ -667,7 +638,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "cos": // Cosine
 					if debug {
 						fmt.Fprintf(os.Stderr, "cos(%v)\n", stack[i-1])
@@ -677,7 +647,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "cosh": // Hyperbolic Cosine
 					if debug {
 						fmt.Fprintf(os.Stderr, "cosh(%v)\n", stack[i-1])
@@ -687,7 +656,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "sin": // Sine
 					if debug {
 						fmt.Fprintf(os.Stderr, "sin(%v)\n", stack[i-1])
@@ -697,7 +665,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "sinh": // Hyperbolic Sine
 					if debug {
 						fmt.Fprintf(os.Stderr, "sinh(%v)\n", stack[i-1])
@@ -707,7 +674,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "tanh": // Hyperbolic tangent
 					if debug {
 						fmt.Fprintf(os.Stderr, "tanh(%v)\n", stack[i-1])
@@ -717,7 +683,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "hex": // Switch display mode to hexadecimal
 					if debug {
 						fmt.Fprintf(os.Stderr, "mode changed to hex\n")
@@ -725,7 +690,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					Mode = "hex"
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "dec": // Switch display mode to decimal (default)
 					if debug {
 						fmt.Fprintf(os.Stderr, "mode changed to dec\n")
@@ -733,7 +697,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					Mode = "dec"
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "bin": // Switch display mode to binary
 					if debug {
 						fmt.Fprintf(os.Stderr, "mode changed to bin\n")
@@ -741,7 +704,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					Mode = "bin"
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "oct": // Switch display mode to octal
 					if debug {
 						fmt.Fprintf(os.Stderr, "mode changed to oct\n")
@@ -749,28 +711,24 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					Mode = "oct"
 					stack = remove(stack, i+1, 1)
 					i -= 1
-					break
 				case "e": // Push e
 					if debug {
 						fmt.Fprintf(os.Stderr, "pushed e\n")
 					}
 					stack[i].F = big.NewFloat(math.E)
 					stack[i].Type = Number
-					break
 				case "pi": // Push Pi
 					if debug {
 						fmt.Fprintf(os.Stderr, "pushed pi\n")
 					}
 					stack[i].F = big.NewFloat(math.Pi)
 					stack[i].Type = Number
-					break
 				case "rand": // Generate a random number [0.0,1.0)
 					if debug {
 						fmt.Fprintf(os.Stderr, "pushed random number\n")
 					}
 					stack[i].F = big.NewFloat(rand.Float64())
 					stack[i].Type = Number
-					break
 				case "pow": // Raise a number to a power
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v**%v\n", stack[i-1], stack[i-2])
@@ -781,7 +739,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "**": // Raise a number to a power
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v**%v\n", stack[i-1], stack[i-2])
@@ -792,7 +749,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "exp": // Exponentiation
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v**%v\n", stack[i-1], stack[i-2])
@@ -803,7 +759,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 2)
 					i -= 2
-					break
 				case "fact": // Factorial
 					if debug {
 						fmt.Fprintf(os.Stderr, "%v!\n", stack[i-1])
@@ -814,7 +769,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "sqrt": // Square Root
 					if debug {
 						fmt.Fprintf(os.Stderr, "sqrt(%v)\n", stack[i-1])
@@ -824,7 +778,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "ln": // Natural Logarithm
 					if debug {
 						fmt.Fprintf(os.Stderr, "ln(%v)\n", stack[i-1])
@@ -834,7 +787,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "log": // Logarithm
 					if debug {
 						fmt.Fprintf(os.Stderr, "log(%v)\n", stack[i-1])
@@ -844,33 +796,36 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "hnl": // Host to network long
 					if debug {
 						fmt.Fprintf(os.Stderr, "hnl(%v)\n", stack[i-1])
 					}
 					buf := new(bytes.Buffer)
 					a, _ := stack[i-1].F.Int64()
-					binary.Write(buf, binary.BigEndian, a)
+					err := binary.Write(buf, binary.BigEndian, a)
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
+					}
 					stack[i].F = stack[i-1].F
 					stack[i].B = buf.Bytes()
 					stack[i].Type = String
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "hns": // Host to network short
 					if debug {
 						fmt.Fprintf(os.Stderr, "hns(%v)\n", stack[i-1])
 					}
 					buf := new(bytes.Buffer)
 					a, _ := stack[i-1].F.Int64()
-					binary.Write(buf, binary.BigEndian, int32(a))
+					err := binary.Write(buf, binary.BigEndian, int32(a))
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "Error: %s", err.Error())
+					}
 					stack[i].F = stack[i-1].F
 					stack[i].B = buf.Bytes()
 					stack[i].Type = String
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "nhl": // Network to host long
 					if debug {
 						fmt.Fprintf(os.Stderr, "nhl(%v)\n", stack[i-1])
@@ -879,7 +834,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "nhs": // Network to host short
 					if debug {
 						fmt.Fprintf(os.Stderr, "nhs(%v)\n", stack[i-1])
@@ -888,7 +842,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i].Type = Number
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "pick": // Pick the -n'th item from the stack
 					if debug {
 						fmt.Fprintf(os.Stderr, "pick(%v)\n", stack[i-1])
@@ -897,7 +850,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i] = stack[j]
 					stack = remove(stack, i, 1)
 					i -= 1
-					break
 				case "repeat": // Repeat an operation n times, e.g. '3 repeat +'
 					if debug {
 						fmt.Fprintf(os.Stderr, "for i = 0; i < %v, i++ { %v } \n", stack[i-1], stack[i+1])
@@ -911,21 +863,18 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack = append(stack[:i-1], tmpS...)
 					stack = append(stack, tmpS2...)
 					i -= 2
-					break
 				case "depth": // Push the current stack depth
 					if debug {
 						fmt.Fprintf(os.Stderr, "push(len(stack))\n")
 					}
 					stack[i].F = big.NewFloat(float64(i))
 					stack[i].Type = Number
-					break
 				case "drop": // Drops the top item from the stack
 					if debug {
 						fmt.Fprintf(os.Stderr, "drop(stack)\n")
 					}
 					stack = remove(stack, i+1, 2)
 					i -= 1
-					break
 				case "dropn": // Drops n items from the stack
 					if debug {
 						fmt.Fprintf(os.Stderr, "dropn(stack,%v)\n", stack[i-1])
@@ -933,13 +882,11 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					n, _ := stack[i-1].F.Int64()
 					stack = remove(stack, i+1, int(n)+2)
 					i -= int(n)
-					break
 				case "dup": // Duplicates the top stack item
 					if debug {
 						fmt.Fprintf(os.Stderr, "x = pop(); push(%v); push(%v);\n", stack[i-1], stack[i-1])
 					}
 					stack[i] = stack[i-1]
-					break
 				case "dupn": // Duplicates the top n stack items in order
 					if debug {
 						fmt.Fprintf(os.Stderr, "dupn(stack,%v)\n", stack[i-1])
@@ -950,7 +897,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack = append(stack[:i-2], tmpS...)
 					stack = append(stack, rest...)
 					i -= 2
-					break
 				case "roll": // Roll the stack upwards by n
 					if debug {
 						fmt.Fprintf(os.Stderr, "rolls the stack\n")
@@ -965,7 +911,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					tmpS = append(tmpS, stack[:i-int(n)-1]...)
 					stack = append(tmpS, rest...)
 					i -= 1
-					break
 				case "rolld": // Roll the stack downwards by n
 					if debug {
 						fmt.Fprintf(os.Stderr, "rolls the stack by %v\n", stack[i-1])
@@ -980,13 +925,11 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					tmpS = append(tmpS, stack[n-1:i]...)
 					stack = append(tmpS, rest...)
 					i -= 1
-					break
 				case "stack": // Toggles stack display from horizontal to vertical
 					if debug {
 						fmt.Fprintf(os.Stderr, "toggle stack visualization %v\n", stack[i-1])
 					}
 					Vertical = !Vertical
-					break
 				case "swap": // Swap the top 2 stack items
 					if debug {
 						fmt.Fprintln(os.Stderr, "Exchanging: ", stack[i-1], " and ", stack[i-2])
@@ -995,7 +938,6 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					stack[i-2] = stack[i-1]
 					stack[i-1] = tmp
 					stack = remove(stack, i+1, 1)
-					break
 				case "macro": // Defines a macro, e.g. 'macro kib 1024 *'
 					if debug {
 						fmt.Fprintln(os.Stderr, "new macro: ", stack[i-1])
@@ -1010,14 +952,11 @@ func Eval(stack []Var, vars map[string]Var, ip int) ([]Var, map[string]Var, int)
 					}
 					stack = remove(stack, len(stack), len(stack)-i)
 					i += len(stack) - i
-					break
-				case "help": //Print the help message
+				case "help": // Print the help message
 					flag.CommandLine.Usage()
-					break
-				case "exit": //Exit the calculator
+				case "exit": // Exit the calculator
 					Exit = true
 					i += len(stack) - i
-					break
 				default:
 					if debug {
 						fmt.Fprintf(os.Stderr, "Encountered user-defined macro %v -> %v\n", stack[i].V, vars[stack[i].V].Code)
@@ -1070,7 +1009,6 @@ func PrintStack(stack []Var, out *os.File) {
 				format = "%v,"
 			}
 			// fmt.Fprintf(out, format, stack[i].F)
-			break
 		case "hex":
 			if Vertical {
 				format = "%#x\n"
@@ -1078,21 +1016,18 @@ func PrintStack(stack []Var, out *os.File) {
 				format = "%#x,"
 			}
 			// fmt.Fprintf(out, format, stack[i].F)
-			break
 		case "bin":
 			if Vertical {
 				format = "%#b\n"
 			} else {
 				format = "%#b,"
 			}
-			break
 		case "oct":
 			if Vertical {
 				format = "%#o\n"
 			} else {
 				format = "%#o,"
 			}
-			break
 		}
 		switch stack[i].Type {
 		case Number:
@@ -1118,6 +1053,7 @@ func PrintStack(stack []Var, out *os.File) {
 		fmt.Fprint(out, "\b ]")
 	}
 }
+
 func PrintVars(vars map[string]Var, out *os.File) {
 	// fmt.Fprintln(out, vars)
 	if len(vars) > 0 {
@@ -1135,7 +1071,6 @@ func PrintVars(vars map[string]Var, out *os.File) {
 				format = "%v,"
 			}
 			// fmt.Fprintf(out, format, stack[i].F)
-			break
 		case "hex":
 			if Vertical {
 				format = "%#x\n"
@@ -1143,27 +1078,24 @@ func PrintVars(vars map[string]Var, out *os.File) {
 				format = "%#x,"
 			}
 			// fmt.Fprintf(out, format, stack[i].F)
-			break
 		case "bin":
 			if Vertical {
 				format = "%#b\n"
 			} else {
 				format = "%#b,"
 			}
-			break
 		case "oct":
 			if Vertical {
 				format = "%#o\n"
 			} else {
 				format = "%#o,"
 			}
-			break
 		}
 		switch vars[i].Type {
 		case Number:
 			if Mode == "dec" {
 				text := vars[i].F.Text('f', int(vars[i].F.MinPrec()))
-				fmt.Fprintf(out, format, string(text))
+				fmt.Fprintf(out, format, text)
 			} else {
 				fmt.Fprintf(out, format, tmp)
 			}
@@ -1182,7 +1114,6 @@ func PrintVars(vars map[string]Var, out *os.File) {
 	if len(vars) > 0 {
 		fmt.Fprint(out, "\b ]")
 	}
-	return
 }
 
 func main() {
